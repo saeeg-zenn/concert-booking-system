@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Select Seats - ConcertHub{% endblock %}
+
+{% block content %}
+
+    <section class="page-header">
+        <h1>Select Your Seats</h1>
+        <p>Coldplay World Tour • Pune • 5 Nov 2026</p>
+    </section>
+
+    <section class="seat-selection">
+
+        <div class="seat-map">
+
+            <div class="stage-label">STAGE</div>
+
+            <div class="seat-row">
+                <div class="seat" data-seat="A1" data-price="3000">A1</div>
+                <div class="seat" data-seat="A2" data-price="3000">A2</div>
+                <div class="seat" data-seat="A3" data-price="3000">A3</div>
+                <div class="seat" data-seat="A4" data-price="3000">A4</div>
+                <div class="seat" data-seat="A5" data-price="3000">A5</div>
+            </div>
+
+            <div class="seat-row">
+                <div class="seat" data-seat="B1" data-price="3000">B1</div>
+                <div class="seat" data-seat="B2" data-price="3000">B2</div>
+                <div class="seat booked" data-seat="B3" data-price="3000">B3</div>
+                <div class="seat" data-seat="B4" data-price="3000">B4</div>
+                <div class="seat" data-seat="B5" data-price="3000">B5</div>
+            </div>
+
+            <div class="seat-row">
+                <div class="seat" data-seat="C1" data-price="3000">C1</div>
+                <div class="seat booked" data-seat="C2" data-price="3000">C2</div>
+                <div class="seat" data-seat="C3" data-price="3000">C3</div>
+                <div class="seat" data-seat="C4" data-price="3000">C4</div>
+                <div class="seat" data-seat="C5" data-price="3000">C5</div>
+            </div>
+
+            <div class="seat-legend">
+                <div class="legend-item"><span class="legend-box available"></span> Available</div>
+                <div class="legend-item"><span class="legend-box selected"></span> Selected</div>
+                <div class="legend-item"><span class="legend-box booked"></span> Booked</div>
+            </div>
+        </div>
+
+        <div class="booking-summary">
+            <h3>Booking Summary</h3>
+
+            <p class="summary-label">Selected Seats:</p>
+            <p id="selected-seats-text" class="summary-value">None</p>
+
+            <p class="summary-label">Ticket Price:</p>
+            <p id="price-per-seat-text" class="summary-value">₹3000 × 0</p>
+
+            <hr class="summary-divider">
+
+            <p class="summary-label">Total:</p>
+            <p id="total-price-text" class="summary-total">₹0</p>
+
+            <button id="book-btn" class="btn-primary btn-full">Book Now</button>
+        </div>
+
+    </section>
+
+{% endblock %}

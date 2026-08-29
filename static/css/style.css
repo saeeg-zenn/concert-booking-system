@@ -1,0 +1,401 @@
+/* -------- Reset & base styles -------- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* makes width/height calculations more predictable */
+}
+
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-color: #0f0f14;   /* dark background */
+    color: #f0f0f0;              /* light text */
+    line-height: 1.6;
+}
+
+/* -------- Navbar -------- */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    background-color: #16161f;
+    border-bottom: 1px solid #2a2a35;
+}
+
+.nav-brand {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #1dffbb;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    gap: 30px;
+}
+
+.nav-links a {
+    color: #f0f0f0;
+    text-decoration: none;
+    font-size: 0.95rem;
+}
+
+.nav-links a:hover {
+    color: #ff5c8a;
+}
+
+.btn-login {
+    background-color: #ff5c8a;
+    color: #fff !important;
+    padding: 8px 18px;
+    border-radius: 6px;
+}
+
+/* -------- Hero section -------- */
+.hero {
+    text-align: center;
+    padding: 100px 20px;
+    background: linear-gradient(135deg, #1b1b26, #0f0f14);
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    margin-bottom: 15px;
+}
+
+.hero p {
+    color: #b0b0b8;
+    margin-bottom: 30px;
+    font-size: 1.1rem;
+}
+
+.btn-primary {
+    background-color: #ff5c8a;
+    color: #fff;
+    text-decoration: none;
+    padding: 14px 32px;
+    border-radius: 8px;
+    font-weight: bold;
+    transition: background-color 0.2s ease;
+}
+
+.btn-primary:hover {
+    background-color: #e8467a;
+}
+
+/* -------- Featured concerts -------- */
+.featured {
+    padding: 60px 40px;
+}
+
+.featured h2 {
+    margin-bottom: 30px;
+    font-size: 1.8rem;
+}
+
+.concert-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 24px;
+}
+
+.concert-card {
+    background-color: #1b1b26;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #2a2a35;
+    transition: transform 0.2s ease;
+}
+
+.concert-card:hover {
+    transform: translateY(-4px);
+}
+
+.concert-image {
+    height: 160px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    background: linear-gradient(135deg, #2a2a3f, #1b1b26);
+}
+
+.concert-info {
+    padding: 18px;
+}
+
+.concert-info h3 {
+    margin-bottom: 6px;
+}
+
+.concert-meta {
+    color: #a0a0aa;
+    font-size: 0.9rem;
+    margin-bottom: 8px;
+}
+
+.concert-price {
+    color: #ff5c8a;
+    font-weight: bold;
+}
+
+/* -------- Footer -------- */
+.footer {
+    text-align: center;
+    padding: 24px;
+    color: #808088;
+    font-size: 0.85rem;
+    border-top: 1px solid #2a2a35;
+}
+/* -------- Page header (used on concerts.html, etc.) -------- */
+.page-header {
+    padding: 50px 40px 20px;
+}
+
+.page-header h1 {
+    font-size: 2rem;
+    margin-bottom: 8px;
+}
+
+.page-header p {
+    color: #a0a0aa;
+}
+
+/* -------- Filter bar -------- */
+.filter-bar {
+    display: flex;
+    gap: 12px;
+    padding: 0 40px 30px;
+    flex-wrap: wrap; /* allows items to wrap to a new line on small screens */
+}
+
+.filter-input,
+.filter-select {
+    padding: 12px 16px;
+    border-radius: 8px;
+    border: 1px solid #2a2a35;
+    background-color: #1b1b26;
+    color: #f0f0f0;
+    font-size: 0.95rem;
+}
+
+.filter-input {
+    flex: 1;            /* takes up remaining space in the flex row */
+    min-width: 200px;
+}
+/* -------- Auth pages (login/register) -------- */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 80px 20px;
+}
+
+.auth-box {
+    background-color: #1b1b26;
+    border: 1px solid #2a2a35;
+    border-radius: 12px;
+    padding: 40px;
+    width: 100%;
+    max-width: 400px;
+}
+
+.auth-box h2 {
+    margin-bottom: 8px;
+}
+
+.auth-subtitle {
+    color: #a0a0aa;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-form label {
+    font-size: 0.9rem;
+    margin-bottom: 6px;
+    margin-top: 14px;
+    color: #d0d0d5;
+}
+
+.auth-form input {
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #2a2a35;
+    background-color: #0f0f14;
+    color: #f0f0f0;
+    font-size: 0.95rem;
+}
+
+.btn-full {
+    width: 100%;
+    border: none;
+    cursor: pointer;
+    margin-top: 24px;
+    font-size: 1rem;
+}
+
+.auth-switch {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 0.9rem;
+    color: #a0a0aa;
+}
+
+.auth-switch a {
+    color: #ff5c8a;
+}
+/* -------- Active nav link (shows current page) -------- */
+.nav-links a.active {
+    color: #ff5c8a;
+    font-weight: bold;
+}
+/* -------- Seat selection page -------- */
+.seat-selection {
+    display: flex;
+    gap: 40px;
+    padding: 20px 40px 60px;
+    flex-wrap: wrap;
+}
+
+.seat-map {
+    flex: 2;
+    min-width: 300px;
+    background-color: #1b1b26;
+    border: 1px solid #2a2a35;
+    border-radius: 12px;
+    padding: 30px;
+    text-align: center;
+}
+
+.stage-label {
+    background-color: #2a2a35;
+    color: #a0a0aa;
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 30px;
+    letter-spacing: 4px;
+    font-size: 0.85rem;
+}
+
+.seat-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+.seat {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #2a2a35;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    cursor: pointer;
+    user-select: none; /* prevents text highlighting when clicking fast */
+    transition: background-color 0.15s ease;
+}
+
+.seat:hover {
+    background-color: #3a3a4a;
+}
+
+.seat.selected {
+    background-color: #ff5c8a;
+    color: #fff;
+}
+
+.seat.booked {
+    background-color: #4a1f2b;
+    color: #7a5560;
+    cursor: not-allowed; /* shows a "blocked" cursor icon */
+}
+
+.seat-legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-top: 30px;
+    font-size: 0.85rem;
+    color: #a0a0aa;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.legend-box {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.legend-box.available {
+    background-color: #2a2a35;
+}
+
+.legend-box.selected {
+    background-color: #ff5c8a;
+}
+
+.legend-box.booked {
+    background-color: #4a1f2b;
+}
+
+/* -------- Booking summary panel -------- */
+.booking-summary {
+    flex: 1;
+    min-width: 260px;
+    background-color: #1b1b26;
+    border: 1px solid #2a2a35;
+    border-radius: 12px;
+    padding: 30px;
+    height: fit-content;
+}
+
+.booking-summary h3 {
+    margin-bottom: 20px;
+}
+
+.summary-label {
+    color: #a0a0aa;
+    font-size: 0.85rem;
+    margin-top: 16px;
+}
+
+.summary-value {
+    font-size: 1rem;
+    margin-top: 4px;
+}
+
+.summary-divider {
+    border: none;
+    border-top: 1px solid #2a2a35;
+    margin: 20px 0;
+}
+
+.summary-total {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: #ff5c8a;
+}
+/* -------- Makes the whole concert card clickable without weird link styling -------- */
+.concert-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+/* -------- Pink highlight on concert name when hovering the card -------- */
+.concert-card-link:hover .concert-info h3 {
+    color: #ff5c8a;
+}

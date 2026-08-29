@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>{% block title %}ConcertHub{% endblock %}</title>
+
+    <!-- Notice this path changed! More on this below. -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <nav class="navbar">
+        <div class="nav-brand">🎵 ConcertHub</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('home') }}" class="{% block nav_home %}{% endblock %}">Home</a></li>
+            <li><a href="{{ url_for('concerts') }}" class="{% block nav_concerts %}{% endblock %}">Concerts</a></li>
+            <li><a href="#">My Bookings</a></li>
+            <li><a href="{{ url_for('login') }}" class="btn-login {% block nav_login %}{% endblock %}">Login</a></li>
+        </ul>
+    </nav>
+
+    <!-- THIS is the "hole" — every page's unique content gets inserted right here. -->
+    {% block content %}{% endblock %}
+
+    <footer class="footer">
+        <p>&copy; 2026 ConcertHub. Student Project.</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
