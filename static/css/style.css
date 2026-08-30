@@ -449,3 +449,7 @@ body {
     margin: 24px 0;
     line-height: 1.7;
 }
+.nav-username {
+    color: #a0a0aa;
+    font-size: 0.9rem;
+}

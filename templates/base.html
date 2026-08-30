@@ -17,7 +17,12 @@
             <li><a href="{{ url_for('home') }}" class="{% block nav_home %}{% endblock %}">Home</a></li>
             <li><a href="{{ url_for('concerts') }}" class="{% block nav_concerts %}{% endblock %}">Concerts</a></li>
             <li><a href="#">My Bookings</a></li>
-            <li><a href="{{ url_for('login') }}" class="btn-login {% block nav_login %}{% endblock %}">Login</a></li>
+            {% if session.user_id %}
+    <li><span class="nav-username">Hi, {{ session.user_name }}</span></li>
+    <li><a href="{{ url_for('logout') }}" class="btn-login">Logout</a></li>
+{% else %}
+    <li><a href="{{ url_for('login') }}" class="btn-login {% block nav_login %}{% endblock %}">Login</a></li>
+{% endif %}
         </ul>
     </nav>
 

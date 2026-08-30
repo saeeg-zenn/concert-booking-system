@@ -1,7 +1,10 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
+from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
 
 app = Flask(__name__)
+
+app.secret_key = 'dev-secret-key-change-this-later'
 
 
 def get_db_connection():
@@ -31,10 +34,29 @@ def login():
     if request.method == 'POST':
         email = request.form['email']
         password = request.form['password']
-        print(f"Login attempt: {email} / {password}")
+
+        connection = get_db_connection()
+        user = connection.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+        connection.close()
+
+        if user is None:
+            return "No account found with that email."  # temporary — we'll make this nicer in Stage 10
+
+        if not check_password_hash(user['password'], password):
+            return "Incorrect password."  # temporary — same, will be improved later
+
+        # If we reach here, the email exists AND the password is correct.
+        session['user_id'] = user['id']
+        session['user_name'] = user['name']
+
         return redirect(url_for('home'))
 
     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('home'))
 
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -43,8 +65,26 @@ def register():
         name = request.form['name']
         email = request.form['email']
         password = request.form['password']
-        print(f"Registration attempt: {name} / {email} / {password}")
-        return redirect(url_for('home'))
+
+        connection = get_db_connection()
+
+        # Check if this email is already registered, BEFORE trying to insert.
+        existing_user = connection.execute('SELECT * FROM users WHERE email = ?', (email,)).fetchone()
+
+        if existing_user is not None:
+            connection.close()
+            return "An account with that email already exists."  # temporary message, improved in Stage 10
+
+        hashed_password = generate_password_hash(password)
+
+        connection.execute(
+            'INSERT INTO users (name, email, password, role) VALUES (?, ?, ?, ?)',
+            (name, email, hashed_password, 'user')
+        )
+        connection.commit()
+        connection.close()
+
+        return redirect(url_for('login'))
 
     return render_template('register.html')
 
