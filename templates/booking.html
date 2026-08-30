@@ -6,7 +6,7 @@
 
     <section class="page-header">
         <h1>Select Your Seats</h1>
-        <p>Coldplay World Tour • Pune • 5 Nov 2026</p>
+        <p>{{ concert['concert_name'] }} • {{ concert['city'] }} • {{ concert['date'] }}</p>
     </section>
 
     <section class="seat-selection">
@@ -15,28 +15,37 @@
 
             <div class="stage-label">STAGE</div>
 
+            
             <div class="seat-row">
-                <div class="seat" data-seat="A1" data-price="3000">A1</div>
-                <div class="seat" data-seat="A2" data-price="3000">A2</div>
-                <div class="seat" data-seat="A3" data-price="3000">A3</div>
-                <div class="seat" data-seat="A4" data-price="3000">A4</div>
-                <div class="seat" data-seat="A5" data-price="3000">A5</div>
+                {% for seat in row_a %}
+                <div class="seat {{ 'booked' if seat['status'] == 'booked' else '' }}"
+                     data-seat="{{ seat['seat_number'] }}"
+                     data-price="{{ concert['price'] }}">
+                    {{ seat['seat_number'] }}
+                </div>
+                {% endfor %}
             </div>
 
+            
             <div class="seat-row">
-                <div class="seat" data-seat="B1" data-price="3000">B1</div>
-                <div class="seat" data-seat="B2" data-price="3000">B2</div>
-                <div class="seat booked" data-seat="B3" data-price="3000">B3</div>
-                <div class="seat" data-seat="B4" data-price="3000">B4</div>
-                <div class="seat" data-seat="B5" data-price="3000">B5</div>
+                {% for seat in row_b %}
+                <div class="seat {{ 'booked' if seat['status'] == 'booked' else '' }}"
+                     data-seat="{{ seat['seat_number'] }}"
+                     data-price="{{ concert['price'] }}">
+                    {{ seat['seat_number'] }}
+                </div>
+                {% endfor %}
             </div>
 
+            
             <div class="seat-row">
-                <div class="seat" data-seat="C1" data-price="3000">C1</div>
-                <div class="seat booked" data-seat="C2" data-price="3000">C2</div>
-                <div class="seat" data-seat="C3" data-price="3000">C3</div>
-                <div class="seat" data-seat="C4" data-price="3000">C4</div>
-                <div class="seat" data-seat="C5" data-price="3000">C5</div>
+                {% for seat in row_c %}
+                <div class="seat {{ 'booked' if seat['status'] == 'booked' else '' }}"
+                     data-seat="{{ seat['seat_number'] }}"
+                     data-price="{{ concert['price'] }}">
+                    {{ seat['seat_number'] }}
+                </div>
+                {% endfor %}
             </div>
 
             <div class="seat-legend">
@@ -53,7 +62,7 @@
             <p id="selected-seats-text" class="summary-value">None</p>
 
             <p class="summary-label">Ticket Price:</p>
-            <p id="price-per-seat-text" class="summary-value">₹3000 × 0</p>
+            <p id="price-per-seat-text" class="summary-value">₹{{ concert['price'] }} × 0</p>
 
             <hr class="summary-divider">
 

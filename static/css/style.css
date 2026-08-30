@@ -399,3 +399,53 @@ body {
 .concert-card-link:hover .concert-info h3 {
     color: #ff5c8a;
 }
+/* -------- Concert details page -------- */
+.concert-detail-container {
+    padding: 20px 40px 60px;
+    display: flex;
+    justify-content: center;
+}
+
+.concert-detail-card {
+    background-color: #1b1b26;
+    border: 1px solid #2a2a35;
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 700px;
+    width: 100%;
+}
+
+.concert-detail-image {
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 5rem;
+    background: linear-gradient(135deg, #2a2a3f, #1b1b26);
+}
+
+.concert-detail-info {
+    padding: 30px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #2a2a35;
+}
+
+.detail-label {
+    color: #a0a0aa;
+    font-size: 0.9rem;
+}
+
+.detail-value {
+    font-weight: bold;
+}
+
+.concert-description {
+    color: #c0c0c8;
+    margin: 24px 0;
+    line-height: 1.7;
+}

@@ -16,41 +16,19 @@
         <h2>Upcoming Concerts</h2>
 
         <div class="concert-grid">
-
-            <a href="{{ url_for('concert_details', concert_id=1) }}" class="concert-card-link">
-            <div class="concert-card">
-                <div class="concert-image">🎤</div>
-                <div class="concert-info">
-                    <h3>Arijit Singh Live</h3>
-                    <p class="concert-meta">Mumbai • 12 Oct 2026</p>
-                    <p class="concert-price">₹1500 onwards</p>
-                </div>
-            </div>
-            </a>
-
-            <a href="{{ url_for('concert_details', concert_id=2) }}" class="concert-card-link">
-            <div class="concert-card">
-                <div class="concert-image">🎸</div>
-                <div class="concert-info">
-                    <h3>Coldplay World Tour</h3>
-                    <p class="concert-meta">Pune • 5 Nov 2026</p>
-                    <p class="concert-price">₹3000 onwards</p>
-                </div>
-            </div>
-            </a>
-
-            <a href="{{ url_for('concert_details', concert_id=3) }}" class="concert-card-link">
-            <div class="concert-card">
-                <div class="concert-image">🥁</div>
-                <div class="concert-info">
-                    <h3>Local Indie Night</h3>
-                    <p class="concert-meta">Bangalore • 20 Sep 2026</p>
-                    <p class="concert-price">₹500 onwards</p>
-                </div>
-            </div>
-            </a>
-
+    {% for concert in concerts %}
+    <a href="{{ url_for('concert_details', concert_id=concert['id']) }}" class="concert-card-link">
+    <div class="concert-card">
+        <div class="concert-image">🎵</div>
+        <div class="concert-info">
+            <h3>{{ concert['concert_name'] }}</h3>
+            <p class="concert-meta">{{ concert['city'] }} • {{ concert['date'] }}</p>
+            <p class="concert-price">₹{{ concert['price'] }} onwards</p>
         </div>
+    </div>
+    </a>
+    {% endfor %}
+</div>
     </section>
 
 {% endblock %}
