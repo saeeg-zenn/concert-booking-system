@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}My Bookings - ConcertHub{% endblock %}
+
+{% block content %}
+
+    <section class="page-header">
+        <h1>My Bookings</h1>
+        <p>Your upcoming and past concert bookings.</p>
+    </section>
+
+    <section class="bookings-list">
+        {% if bookings|length == 0 %}
+            <p class="no-bookings">You haven't booked any concerts yet.</p>
+        {% else %}
+            {% for booking in bookings %}
+            <div class="booking-card">
+                <div class="booking-info">
+                    <h3>{{ booking['concert_name'] }}</h3>
+                    <p class="booking-meta">{{ booking['artist'] }} • {{ booking['city'] }} • {{ booking['concert_date'] }}</p>
+                    <p class="booking-meta">Booked on: {{ booking['booking_date'] }}</p>
+                </div>
+                <div class="booking-price">
+                    <p class="summary-total">₹{{ booking['total_amount'] }}</p>
+                    <span class="booking-status">{{ booking['status'] }}</span>
+                </div>
+            </div>
+            {% endfor %}
+        {% endif %}
+    </section>
+
+{% endblock %}

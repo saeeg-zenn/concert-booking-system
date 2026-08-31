@@ -14,27 +14,28 @@ if (seats.length > 0) {
 
         seat.addEventListener('click', function () {
 
-            if (seat.classList.contains('booked')) {
-                return;
-            }
+    if (seat.classList.contains('booked')) {
+        return;
+    }
 
-            const seatName = seat.dataset.seat;
-            const seatPrice = Number(seat.dataset.price);
+    const seatName = seat.dataset.seat;
+    const seatPrice = Number(seat.dataset.price);
+    const seatId = Number(seat.dataset.seatId); // NEW: reading the seat's database ID
 
-            if (seat.classList.contains('selected')) {
-                seat.classList.remove('selected');
+    if (seat.classList.contains('selected')) {
+        seat.classList.remove('selected');
 
-                selectedSeats = selectedSeats.filter(function (s) {
-                    return s.name !== seatName;
-                });
-
-            } else {
-                seat.classList.add('selected');
-                selectedSeats.push({ name: seatName, price: seatPrice });
-            }
-
-            updateSummary();
+        selectedSeats = selectedSeats.filter(function (s) {
+            return s.name !== seatName;
         });
+
+    } else {
+        seat.classList.add('selected');
+        selectedSeats.push({ id: seatId, name: seatName, price: seatPrice }); // NEW: storing id too
+    }
+
+    updateSummary();
+});
     });
 
 
@@ -72,17 +73,46 @@ if (seats.length > 0) {
     // Handle the "Book Now" button click.
     const bookBtn = document.getElementById('book-btn');
 
-    bookBtn.addEventListener('click', function () {
-        if (selectedSeats.length === 0) {
-            alert('Please select at least one seat before booking.');
-            return;
-        }
+bookBtn.addEventListener('click', function () {
+    if (selectedSeats.length === 0) {
+        alert('Please select at least one seat before booking.');
+        return;
+    }
 
-        const seatNames = selectedSeats.map(function (s) {
-            return s.name;
-        }).join(', ');
+    const concertId = document.getElementById('concert-id').value;
 
-        alert(`(Demo only) You selected seats: ${seatNames}. Real booking will be implemented once we connect the backend.`);
+    // Collect just the seat IDs (not names/prices) to send to the server.
+    const seatIds = selectedSeats.map(function (s) {
+        return s.id;
     });
+
+    // fetch() sends a network request without reloading the page.
+    fetch('/book-seats', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            concert_id: concertId,
+            seat_ids: seatIds
+        })
+    })
+    .then(function (response) {
+        return response.json(); // parse Flask's response as JSON
+    })
+    .then(function (data) {
+        if (data.success) {
+            alert('Booking confirmed! Booking ID: ' + data.booking_id);
+            window.location.href = '/my-bookings'; // redirect after confirming
+        } else {
+            alert('Booking failed: ' + data.message);
+            window.location.reload(); // refresh to show updated seat availability
+        }
+    })
+    .catch(function (error) {
+        alert('Something went wrong. Please try again.');
+        console.error(error);
+    });
+});
 
 } // end of "if (seats.length > 0)"

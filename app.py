@@ -1,6 +1,7 @@
-from flask import Flask, render_template, request, redirect, url_for, session
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
 import sqlite3
+import datetime
 
 app = Flask(__name__)
 
@@ -112,6 +113,95 @@ def concert_details(concert_id):
     connection.close()
     return render_template('concert-details.html', concert=concert)
 
+
+@app.route('/book-seats', methods=['POST'])
+def book_seats():
+    # Step 1: make sure the user is actually logged in.
+    if 'user_id' not in session:
+        return jsonify(success=False, message="You must be logged in to book seats."), 401
+
+    data = request.get_json()  # reads the JSON body sent by fetch()
+    concert_id = data.get('concert_id')
+    seat_ids = data.get('seat_ids')
+
+    if not seat_ids:
+        return jsonify(success=False, message="No seats were selected."), 400
+
+    connection = get_db_connection()
+
+    # Step 2: get the concert's REAL price from the database — never trust a price from the browser.
+    concert = connection.execute('SELECT * FROM concerts WHERE id = ?', (concert_id,)).fetchone()
+    if concert is None:
+        connection.close()
+        return jsonify(success=False, message="Concert not found."), 404
+
+    # Step 3: re-check EVERY selected seat is still actually available right now.
+    placeholders = ','.join('?' for _ in seat_ids)  # builds "?,?,?" to match however many seat_ids we got
+    seats = connection.execute(
+        f'SELECT * FROM seats WHERE id IN ({placeholders}) AND concert_id = ?',
+        (*seat_ids, concert_id)
+    ).fetchall()
+
+    if len(seats) != len(seat_ids):
+        connection.close()
+        return jsonify(success=False, message="One or more selected seats don't exist for this concert."), 400
+
+    for seat in seats:
+        if seat['status'] == 'booked':
+            connection.close()
+            return jsonify(success=False, message=f"Seat {seat['seat_number']} was just booked by someone else. Please choose another seat."), 409
+
+    # Step 4: calculate the REAL total, using the database price, not anything from the browser.
+    total_amount = concert['price'] * len(seat_ids)
+
+    # Step 5: create the booking record.
+    booking_date = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    cursor = connection.execute(
+        'INSERT INTO bookings (user_id, concert_id, booking_date, total_amount, status) VALUES (?, ?, ?, ?, ?)',
+        (session['user_id'], concert_id, booking_date, total_amount, 'confirmed')
+    )
+    booking_id = cursor.lastrowid  # the ID SQLite just auto-assigned to this new booking
+
+    # Step 6 & 7: link each seat to this booking, and mark it as booked.
+    for seat_id in seat_ids:
+        connection.execute(
+            'INSERT INTO booking_seats (booking_id, seat_id) VALUES (?, ?)',
+            (booking_id, seat_id)
+        )
+        connection.execute(
+            'UPDATE seats SET status = ? WHERE id = ?',
+            ('booked', seat_id)
+        )
+
+    connection.commit()
+    connection.close()
+
+    return jsonify(success=True, booking_id=booking_id)
+
+@app.route('/my-bookings')
+def my_bookings():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    connection = get_db_connection()
+
+    bookings = connection.execute('''
+        SELECT bookings.id AS booking_id,
+               bookings.booking_date,
+               bookings.total_amount,
+               bookings.status,
+               concerts.concert_name,
+               concerts.artist,
+               concerts.city,
+               concerts.date AS concert_date
+        FROM bookings
+        JOIN concerts ON bookings.concert_id = concerts.id
+        WHERE bookings.user_id = ?
+        ORDER BY bookings.booking_date DESC
+    ''', (session['user_id'],)).fetchall()
+
+    connection.close()
+    return render_template('my-bookings.html', bookings=bookings)
 
 if __name__ == '__main__':
     app.run(debug=True)

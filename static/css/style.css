@@ -453,3 +453,46 @@ body {
     color: #a0a0aa;
     font-size: 0.9rem;
 }
+/* -------- My Bookings page -------- */
+.bookings-list {
+    padding: 20px 40px 60px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.booking-card {
+    background-color: #1b1b26;
+    border: 1px solid #2a2a35;
+    border-radius: 12px;
+    padding: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.booking-meta {
+    color: #a0a0aa;
+    font-size: 0.9rem;
+    margin-top: 4px;
+}
+
+.booking-price {
+    text-align: right;
+}
+
+.booking-status {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 4px 12px;
+    background-color: #2a2a35;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    text-transform: capitalize;
+}
+
+.no-bookings {
+    padding: 40px;
+    text-align: center;
+    color: #a0a0aa;
+}

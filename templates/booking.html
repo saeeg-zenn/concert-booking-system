@@ -13,39 +13,43 @@
 
         <div class="seat-map">
 
+<input type="hidden" id="concert-id" value="{{ concert['id'] }}">
             <div class="stage-label">STAGE</div>
 
             
             <div class="seat-row">
                 {% for seat in row_a %}
-                <div class="seat {{ 'booked' if seat['status'] == 'booked' else '' }}"
-                     data-seat="{{ seat['seat_number'] }}"
-                     data-price="{{ concert['price'] }}">
-                    {{ seat['seat_number'] }}
-                </div>
-                {% endfor %}
+<div class="seat {{ 'booked' if seat['status'] == 'booked' else '' }}"
+     data-seat="{{ seat['seat_number'] }}"
+     data-seat-id="{{ seat['id'] }}"
+     data-price="{{ concert['price'] }}">
+    {{ seat['seat_number'] }}
+</div>
+{% endfor %}
             </div>
 
             
             <div class="seat-row">
                 {% for seat in row_b %}
-                <div class="seat {{ 'booked' if seat['status'] == 'booked' else '' }}"
-                     data-seat="{{ seat['seat_number'] }}"
-                     data-price="{{ concert['price'] }}">
-                    {{ seat['seat_number'] }}
-                </div>
-                {% endfor %}
+<div class="seat {{ 'booked' if seat['status'] == 'booked' else '' }}"
+     data-seat="{{ seat['seat_number'] }}"
+     data-seat-id="{{ seat['id'] }}"
+     data-price="{{ concert['price'] }}">
+    {{ seat['seat_number'] }}
+</div>
+{% endfor %}
             </div>
 
             
             <div class="seat-row">
                 {% for seat in row_c %}
-                <div class="seat {{ 'booked' if seat['status'] == 'booked' else '' }}"
-                     data-seat="{{ seat['seat_number'] }}"
-                     data-price="{{ concert['price'] }}">
-                    {{ seat['seat_number'] }}
-                </div>
-                {% endfor %}
+<div class="seat {{ 'booked' if seat['status'] == 'booked' else '' }}"
+     data-seat="{{ seat['seat_number'] }}"
+     data-seat-id="{{ seat['id'] }}"
+     data-price="{{ concert['price'] }}">
+    {{ seat['seat_number'] }}
+</div>
+{% endfor %}
             </div>
 
             <div class="seat-legend">
