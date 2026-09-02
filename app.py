@@ -203,5 +203,49 @@ def my_bookings():
     connection.close()
     return render_template('my-bookings.html', bookings=bookings)
 
+@app.route('/cancel-booking/<int:booking_id>', methods=['POST'])
+def cancel_booking(booking_id):
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    connection = get_db_connection()
+
+    # Step 1: find this booking, and confirm it actually belongs to the logged-in user.
+    booking = connection.execute(
+        'SELECT * FROM bookings WHERE id = ? AND user_id = ?',
+        (booking_id, session['user_id'])
+    ).fetchone()
+
+    if booking is None:
+        connection.close()
+        return "Booking not found, or you don't have permission to cancel it.", 403
+
+    if booking['status'] == 'cancelled':
+        connection.close()
+        return redirect(url_for('my_bookings'))  # already cancelled, nothing to do
+
+    # Step 2: find every seat linked to this booking, and set each one back to 'available'.
+    seat_links = connection.execute(
+        'SELECT seat_id FROM booking_seats WHERE booking_id = ?',
+        (booking_id,)
+    ).fetchall()
+
+    for link in seat_links:
+        connection.execute(
+            'UPDATE seats SET status = ? WHERE id = ?',
+            ('available', link['seat_id'])
+        )
+
+    # Step 3: mark the booking itself as cancelled (we keep the record, not delete it).
+    connection.execute(
+        'UPDATE bookings SET status = ? WHERE id = ?',
+        ('cancelled', booking_id)
+    )
+
+    connection.commit()
+    connection.close()
+
+    return redirect(url_for('my_bookings'))
+
 if __name__ == '__main__':
     app.run(debug=True)

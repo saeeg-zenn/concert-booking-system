@@ -496,3 +496,21 @@ body {
     text-align: center;
     color: #a0a0aa;
 }
+.cancel-form {
+    margin-top: 10px;
+}
+
+.btn-cancel {
+    background: none;
+    border: 1px solid #ff5c8a;
+    color: #ff5c8a;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+
+.btn-cancel:hover {
+    background-color: #ff5c8a;
+    color: #fff;
+}

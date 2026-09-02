@@ -21,9 +21,15 @@
                     <p class="booking-meta">Booked on: {{ booking['booking_date'] }}</p>
                 </div>
                 <div class="booking-price">
-                    <p class="summary-total">₹{{ booking['total_amount'] }}</p>
-                    <span class="booking-status">{{ booking['status'] }}</span>
-                </div>
+    <p class="summary-total">₹{{ booking['total_amount'] }}</p>
+    <span class="booking-status">{{ booking['status'] }}</span>
+
+    {% if booking['status'] == 'confirmed' %}
+    <form action="{{ url_for('cancel_booking', booking_id=booking['booking_id']) }}" method="POST" class="cancel-form">
+        <button type="submit" class="btn-cancel">Cancel Booking</button>
+    </form>
+    {% endif %}
+</div>
             </div>
             {% endfor %}
         {% endif %}
