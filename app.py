@@ -272,13 +272,15 @@ def admin_dashboard():
     total_concerts = connection.execute('SELECT COUNT(*) FROM concerts').fetchone()[0]
     total_users = connection.execute('SELECT COUNT(*) FROM users').fetchone()[0]
     total_bookings = connection.execute("SELECT COUNT(*) FROM bookings WHERE status = 'confirmed'").fetchone()[0]
+    all_concerts = connection.execute('SELECT * FROM concerts ORDER BY id DESC').fetchall()
 
     connection.close()
 
     return render_template('admin.html',
                             total_concerts=total_concerts,
                             total_users=total_users,
-                            total_bookings=total_bookings)
+                            total_bookings=total_bookings,
+                            all_concerts=all_concerts)
 
 @app.route('/admin/concerts/add', methods=['GET', 'POST'])
 @admin_required
@@ -319,6 +321,63 @@ def add_concert():
         return redirect(url_for('admin_dashboard'))
 
     return render_template('admin-add-concert.html')
+
+
+@app.route('/admin/concerts/edit/<int:concert_id>', methods=['GET', 'POST'])
+@admin_required
+def edit_concert(concert_id):
+    connection = get_db_connection()
+
+    if request.method == 'POST':
+        artist = request.form['artist']
+        concert_name = request.form['concert_name']
+        venue = request.form['venue']
+        city = request.form['city']
+        date = request.form['date']
+        time = request.form['time']
+        price = request.form['price']
+        description = request.form['description']
+
+        connection.execute('''
+            UPDATE concerts
+            SET artist = ?, concert_name = ?, venue = ?, city = ?, date = ?, time = ?, price = ?, description = ?
+            WHERE id = ?
+        ''', (artist, concert_name, venue, city, date, time, price, description, concert_id))
+
+        connection.commit()
+        connection.close()
+
+        return redirect(url_for('admin_dashboard'))
+
+    concert = connection.execute('SELECT * FROM concerts WHERE id = ?', (concert_id,)).fetchone()
+    connection.close()
+
+    if concert is None:
+        return "Concert not found.", 404
+
+    return render_template('admin-edit-concert.html', concert=concert)
+
+
+@app.route('/admin/concerts/delete/<int:concert_id>', methods=['POST'])
+@admin_required
+def delete_concert(concert_id):
+    connection = get_db_connection()
+
+    existing_bookings = connection.execute(
+        'SELECT COUNT(*) FROM bookings WHERE concert_id = ?', (concert_id,)
+    ).fetchone()[0]
+
+    if existing_bookings > 0:
+        connection.close()
+        return "Cannot delete a concert that has existing bookings.", 400
+
+    connection.execute('DELETE FROM seats WHERE concert_id = ?', (concert_id,))
+    connection.execute('DELETE FROM concerts WHERE id = ?', (concert_id,))
+    connection.commit()
+    connection.close()
+
+    return redirect(url_for('admin_dashboard'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

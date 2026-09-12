@@ -540,3 +540,41 @@ body {
     color: #a0a0aa;
     margin-top: 8px;
 }
+
+.admin-concert-list {
+    padding: 20px 40px 60px;
+}
+
+.admin-concert-list h2 {
+    margin-bottom: 20px;
+}
+
+.admin-concert-row {
+    background-color: #1b1b26;
+    border: 1px solid #2a2a35;
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.admin-concert-actions {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.btn-secondary {
+    background-color: #2a2a35;
+    color: #f0f0f0;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+.btn-secondary:hover {
+    background-color: #3a3a4a;
+}
