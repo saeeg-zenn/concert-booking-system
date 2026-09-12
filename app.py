@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, redirect, url_for, session, jsonify
+from flask import Flask, render_template, request, redirect, url_for, session, jsonify, flash
 from werkzeug.security import generate_password_hash, check_password_hash
 from functools import wraps
 import sqlite3
@@ -57,19 +57,23 @@ def login():
         connection.close()
 
         if user is None:
-            return "No account found with that email."  # temporary — we'll make this nicer in Stage 10
+            flash("No account found with that email.", "error")
+            return redirect(url_for('login'))
 
         if not check_password_hash(user['password'], password):
-            return "Incorrect password."  # temporary — same, will be improved later
+            flash("Incorrect password.", "error")
+            return redirect(url_for('login'))
 
         # If we reach here, the email exists AND the password is correct.
         session['user_id'] = user['id']
         session['user_name'] = user['name']
         session['user_role'] = user['role']
 
+        flash(f"Welcome back, {user['name']}!", "success")
         return redirect(url_for('home'))
 
     return render_template('login.html')
+
 
 @app.route('/logout')
 def logout():
@@ -91,7 +95,8 @@ def register():
 
         if existing_user is not None:
             connection.close()
-            return "An account with that email already exists."  # temporary message, improved in Stage 10
+            flash("An account with that email already exists.", "error")
+            return redirect(url_for('register'))
 
         hashed_password = generate_password_hash(password)
 
@@ -102,6 +107,7 @@ def register():
         connection.commit()
         connection.close()
 
+        flash("Account created successfully! Please log in.", "success")
         return redirect(url_for('login'))
 
     return render_template('register.html')
@@ -195,6 +201,7 @@ def book_seats():
 
     return jsonify(success=True, booking_id=booking_id)
 
+
 @app.route('/my-bookings')
 def my_bookings():
     if 'user_id' not in session:
@@ -220,6 +227,7 @@ def my_bookings():
     connection.close()
     return render_template('my-bookings.html', bookings=bookings)
 
+
 @app.route('/cancel-booking/<int:booking_id>', methods=['POST'])
 def cancel_booking(booking_id):
     if 'user_id' not in session:
@@ -235,7 +243,8 @@ def cancel_booking(booking_id):
 
     if booking is None:
         connection.close()
-        return "Booking not found, or you don't have permission to cancel it.", 403
+        flash("Booking not found, or you don't have permission to cancel it.", "error")
+        return redirect(url_for('my_bookings'))
 
     if booking['status'] == 'cancelled':
         connection.close()
@@ -262,7 +271,9 @@ def cancel_booking(booking_id):
     connection.commit()
     connection.close()
 
+    flash("Booking cancelled successfully.", "success")
     return redirect(url_for('my_bookings'))
+
 
 @app.route('/admin')
 @admin_required
@@ -281,6 +292,7 @@ def admin_dashboard():
                             total_users=total_users,
                             total_bookings=total_bookings,
                             all_concerts=all_concerts)
+
 
 @app.route('/admin/concerts/add', methods=['GET', 'POST'])
 @admin_required
@@ -318,6 +330,7 @@ def add_concert():
         connection.commit()
         connection.close()
 
+        flash("Concert added successfully.", "success")
         return redirect(url_for('admin_dashboard'))
 
     return render_template('admin-add-concert.html')
@@ -347,6 +360,7 @@ def edit_concert(concert_id):
         connection.commit()
         connection.close()
 
+        flash("Concert updated successfully.", "success")
         return redirect(url_for('admin_dashboard'))
 
     concert = connection.execute('SELECT * FROM concerts WHERE id = ?', (concert_id,)).fetchone()
@@ -369,13 +383,15 @@ def delete_concert(concert_id):
 
     if existing_bookings > 0:
         connection.close()
-        return "Cannot delete a concert that has existing bookings.", 400
+        flash("Cannot delete a concert that has existing bookings.", "error")
+        return redirect(url_for('admin_dashboard'))
 
-        connection.execute('DELETE FROM seats WHERE concert_id = ?', (concert_id,))
+    connection.execute('DELETE FROM seats WHERE concert_id = ?', (concert_id,))
     connection.execute('DELETE FROM concerts WHERE id = ?', (concert_id,))
     connection.commit()
     connection.close()
 
+    flash("Concert deleted successfully.", "success")
     return redirect(url_for('admin_dashboard'))
 
 

@@ -27,7 +27,18 @@
     </nav>
 
     <!-- THIS is the "hole" — every page's unique content gets inserted right here. -->
-    {% block content %}{% endblock %}
+     {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="flash-container">
+        {% for category, message in messages %}
+        <div class="flash-message flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+    </div>
+    {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+    
 
     <footer class="footer">
         <p>&copy; 2026 ConcertHub. Student Project.</p>
