@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard - ConcertHub{% endblock %}
+
+{% block content %}
+
+    <section class="page-header">
+        <h1>Admin Dashboard</h1>
+        <p>Welcome, {{ session.user_name }}.</p>
+    </section>
+
+    <section class="admin-stats">
+        <div class="stat-card">
+            <p class="stat-number">{{ total_concerts }}</p>
+            <p class="stat-label">Total Concerts</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-number">{{ total_users }}</p>
+            <p class="stat-label">Registered Users</p>
+        </div>
+        <div class="stat-card">
+            <p class="stat-number">{{ total_bookings }}</p>
+            <p class="stat-label">Confirmed Bookings</p>
+        </div>
+    </section>
+
+{% endblock %}

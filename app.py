@@ -12,6 +12,8 @@ def get_db_connection():
     connection = sqlite3.connect('database/database.db')
     connection.row_factory = sqlite3.Row  # lets us access columns by name, not just by position
     return connection
+def is_admin():
+    return session.get('user_role') == 'admin'
 
 
 @app.route('/')
@@ -49,6 +51,7 @@ def login():
         # If we reach here, the email exists AND the password is correct.
         session['user_id'] = user['id']
         session['user_name'] = user['name']
+        session['user_role'] = user['role']
 
         return redirect(url_for('home'))
 
@@ -246,6 +249,27 @@ def cancel_booking(booking_id):
     connection.close()
 
     return redirect(url_for('my_bookings'))
+
+@app.route('/admin')
+def admin_dashboard():
+    if 'user_id' not in session:
+        return redirect(url_for('login'))
+
+    if not is_admin():
+        return "You do not have permission to access this page.", 403
+
+    connection = get_db_connection()
+
+    total_concerts = connection.execute('SELECT COUNT(*) FROM concerts').fetchone()[0]
+    total_users = connection.execute('SELECT COUNT(*) FROM users').fetchone()[0]
+    total_bookings = connection.execute("SELECT COUNT(*) FROM bookings WHERE status = 'confirmed'").fetchone()[0]
+
+    connection.close()
+
+    return render_template('admin.html',
+                            total_concerts=total_concerts,
+                            total_users=total_users,
+                            total_bookings=total_bookings)
 
 if __name__ == '__main__':
     app.run(debug=True)
