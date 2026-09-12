@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from functools import wraps
 import sqlite3
 import datetime
 
@@ -12,8 +13,21 @@ def get_db_connection():
     connection = sqlite3.connect('database/database.db')
     connection.row_factory = sqlite3.Row  # lets us access columns by name, not just by position
     return connection
+
+
 def is_admin():
     return session.get('user_role') == 'admin'
+
+
+def admin_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'user_id' not in session:
+            return redirect(url_for('login'))
+        if not is_admin():
+            return "You do not have permission to access this page.", 403
+        return f(*args, **kwargs)
+    return decorated_function
 
 
 @app.route('/')
@@ -251,13 +265,8 @@ def cancel_booking(booking_id):
     return redirect(url_for('my_bookings'))
 
 @app.route('/admin')
+@admin_required
 def admin_dashboard():
-    if 'user_id' not in session:
-        return redirect(url_for('login'))
-
-    if not is_admin():
-        return "You do not have permission to access this page.", 403
-
     connection = get_db_connection()
 
     total_concerts = connection.execute('SELECT COUNT(*) FROM concerts').fetchone()[0]
@@ -270,6 +279,46 @@ def admin_dashboard():
                             total_concerts=total_concerts,
                             total_users=total_users,
                             total_bookings=total_bookings)
+
+@app.route('/admin/concerts/add', methods=['GET', 'POST'])
+@admin_required
+def add_concert():
+    if request.method == 'POST':
+        artist = request.form['artist']
+        concert_name = request.form['concert_name']
+        venue = request.form['venue']
+        city = request.form['city']
+        date = request.form['date']
+        time = request.form['time']
+        price = request.form['price']
+        description = request.form['description']
+        total_seats = request.form['total_seats']
+
+        connection = get_db_connection()
+        cursor = connection.execute('''
+            INSERT INTO concerts (artist, concert_name, venue, city, date, time, price, description, total_seats)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ''', (artist, concert_name, venue, city, date, time, price, description, total_seats))
+
+        new_concert_id = cursor.lastrowid
+
+        # Automatically generate the seat map for this new concert too,
+        # same pattern as seed_seats.py from Stage 4.
+        rows = ['A', 'B', 'C']
+        for row_letter in rows:
+            for seat_num in range(1, 6):
+                seat_number = f"{row_letter}{seat_num}"
+                connection.execute(
+                    'INSERT INTO seats (concert_id, seat_number, status) VALUES (?, ?, ?)',
+                    (new_concert_id, seat_number, 'available')
+                )
+
+        connection.commit()
+        connection.close()
+
+        return redirect(url_for('admin_dashboard'))
+
+    return render_template('admin-add-concert.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Add Concert - Admin{% endblock %}
+
+{% block content %}
+
+    <section class="page-header">
+        <h1>Add New Concert</h1>
+    </section>
+
+    <section class="auth-container">
+        <div class="auth-box" style="max-width: 500px;">
+
+            <form class="auth-form" action="{{ url_for('add_concert') }}" method="POST">
+
+                <label for="artist">Artist</label>
+                <input type="text" id="artist" name="artist" required>
+
+                <label for="concert_name">Concert Name</label>
+                <input type="text" id="concert_name" name="concert_name" required>
+
+                <label for="venue">Venue</label>
+                <input type="text" id="venue" name="venue" required>
+
+                <label for="city">City</label>
+                <input type="text" id="city" name="city" required>
+
+                <label for="date">Date</label>
+                <input type="date" id="date" name="date" required>
+
+                <label for="time">Time</label>
+                <input type="time" id="time" name="time" required>
+
+                <label for="price">Price (₹)</label>
+                <input type="number" id="price" name="price" min="0" required>
+
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description">
+
+                <label for="total_seats">Total Seats</label>
+                <input type="number" id="total_seats" name="total_seats" value="15" readonly>
+
+                <button type="submit" class="btn-primary btn-full">Add Concert</button>
+            </form>
+
+        </div>
+    </section>
+
+{% endblock %}
