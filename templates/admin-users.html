@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}All Users - Admin{% endblock %}
+
+{% block content %}
+
+    <section class="page-header">
+        <h1>Registered Users</h1>
+    </section>
+
+    <section class="admin-concert-list">
+        {% for user in users %}
+        <div class="admin-concert-row">
+            <div>
+                <h3>{{ user['name'] }}</h3>
+                <p class="booking-meta">{{ user['email'] }}</p>
+            </div>
+            <span class="booking-status">{{ user['role'] }}</span>
+        </div>
+        {% endfor %}
+    </section>
+
+{% endblock %}

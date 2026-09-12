@@ -371,12 +371,42 @@ def delete_concert(concert_id):
         connection.close()
         return "Cannot delete a concert that has existing bookings.", 400
 
-    connection.execute('DELETE FROM seats WHERE concert_id = ?', (concert_id,))
+        connection.execute('DELETE FROM seats WHERE concert_id = ?', (concert_id,))
     connection.execute('DELETE FROM concerts WHERE id = ?', (concert_id,))
     connection.commit()
     connection.close()
 
     return redirect(url_for('admin_dashboard'))
+
+
+@app.route('/admin/users')
+@admin_required
+def admin_users():
+    connection = get_db_connection()
+    users = connection.execute('SELECT id, name, email, role FROM users ORDER BY id').fetchall()
+    connection.close()
+    return render_template('admin-users.html', users=users)
+
+
+@app.route('/admin/bookings')
+@admin_required
+def admin_bookings():
+    connection = get_db_connection()
+    bookings = connection.execute('''
+        SELECT bookings.id AS booking_id,
+               bookings.booking_date,
+               bookings.total_amount,
+               bookings.status,
+               users.name AS user_name,
+               users.email AS user_email,
+               concerts.concert_name
+        FROM bookings
+        JOIN users ON bookings.user_id = users.id
+        JOIN concerts ON bookings.concert_id = concerts.id
+        ORDER BY bookings.booking_date DESC
+    ''').fetchall()
+    connection.close()
+    return render_template('admin-bookings.html', bookings=bookings)
 
 
 if __name__ == '__main__':

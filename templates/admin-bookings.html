@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}All Bookings - Admin{% endblock %}
+
+{% block content %}
+
+    <section class="page-header">
+        <h1>All Bookings</h1>
+    </section>
+
+    <section class="admin-concert-list">
+        {% for booking in bookings %}
+        <div class="admin-concert-row">
+            <div>
+                <h3>{{ booking['concert_name'] }}</h3>
+                <p class="booking-meta">{{ booking['user_name'] }} ({{ booking['user_email'] }})</p>
+                <p class="booking-meta">Booked on: {{ booking['booking_date'] }}</p>
+            </div>
+            <div style="text-align: right;">
+                <p class="summary-total">₹{{ booking['total_amount'] }}</p>
+                <span class="booking-status">{{ booking['status'] }}</span>
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+
+{% endblock %}
