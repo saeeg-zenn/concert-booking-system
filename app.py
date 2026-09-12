@@ -40,11 +40,40 @@ def home():
 
 @app.route('/concerts')
 def concerts():
-    connection = get_db_connection()
-    concerts = connection.execute('SELECT * FROM concerts').fetchall()
-    connection.close()
-    return render_template('concerts.html', concerts=concerts)
+    # Read optional search/filter values from the URL's query string.
+    # If any of these weren't provided, default to an empty string.
+    search_query = request.args.get('search', '')
+    city_filter = request.args.get('city', '')
+    date_filter = request.args.get('date', '')
 
+    # Build the SQL query dynamically, piece by piece, based on what filters were given.
+    sql = 'SELECT * FROM concerts WHERE 1=1'
+    params = []
+
+    if search_query:
+        sql += ' AND (concert_name LIKE ? OR artist LIKE ?)'
+        params.append(f'%{search_query}%')
+        params.append(f'%{search_query}%')
+
+    if city_filter:
+        sql += ' AND city = ?'
+        params.append(city_filter)
+
+    if date_filter:
+        sql += ' AND date = ?'
+        params.append(date_filter)
+
+    connection = get_db_connection()
+    concerts = connection.execute(sql, params).fetchall()
+
+    # Also get a list of distinct cities, to populate the city dropdown dynamically.
+    cities = connection.execute('SELECT DISTINCT city FROM concerts ORDER BY city').fetchall()
+
+    connection.close()
+
+    return render_template('concerts.html', concerts=concerts, cities=cities,
+                            search_query=search_query, city_filter=city_filter, date_filter=date_filter)
+    
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():

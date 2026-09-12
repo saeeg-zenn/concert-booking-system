@@ -11,22 +11,28 @@
         <p>Find the perfect show near you.</p>
     </section>
 
-    <section class="filter-bar">
-        <input type="text" placeholder="Search by artist or concert name..." class="filter-input">
+    <form class="filter-bar" action="{{ url_for('concerts') }}" method="GET">
+    <input type="text" name="search" placeholder="Search by artist or concert name..."
+           class="filter-input" value="{{ search_query }}">
 
-        <select class="filter-select">
-            <option value="">All Cities</option>
-            <option value="mumbai">Mumbai</option>
-            <option value="pune">Pune</option>
-            <option value="bangalore">Bangalore</option>
-        </select>
+    <select name="city" class="filter-select">
+        <option value="">All Cities</option>
+        {% for city_row in cities %}
+        <option value="{{ city_row['city'] }}" {% if city_filter == city_row['city'] %}selected{% endif %}>
+            {{ city_row['city'] }}
+        </option>
+        {% endfor %}
+    </select>
 
-        <input type="date" class="filter-select">
+    <input type="date" name="date" class="filter-select" value="{{ date_filter }}">
 
-        <button class="btn-primary">Search</button>
-    </section>
+    <button type="submit" class="btn-primary">Search</button>
+</form>
 
     <section class="featured">
+    {% if concerts|length == 0 %}
+    <p class="no-bookings">No concerts found matching your search.</p>
+{% else %}
     <div class="concert-grid">
     {% for concert in concerts %}
     <a href="{{ url_for('concert_details', concert_id=concert['id']) }}" class="concert-card-link">
@@ -39,8 +45,9 @@
         </div>
     </div>
     </a>
-    {% endfor %}
-</div>    
+        {% endfor %}
+</div>
+{% endif %}
     </section>
 
 {% endblock %}
