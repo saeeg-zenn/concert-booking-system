@@ -12,19 +12,25 @@
 <body>
 
     <nav class="navbar">
-        <div class="nav-brand">🎵 ConcertHub</div>
-        <ul class="nav-links">
-            <li><a href="{{ url_for('home') }}" class="{% block nav_home %}{% endblock %}">Home</a></li>
-            <li><a href="{{ url_for('concerts') }}" class="{% block nav_concerts %}{% endblock %}">Concerts</a></li>
+    <div class="nav-brand">🎵 ConcertHub</div>
+
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">☰</button>
+
+    <ul class="nav-links" id="nav-links">
+        <li><a href="{{ url_for('home') }}" class="{% block nav_home %}{% endblock %}">Home</a></li>
+        <li><a href="{{ url_for('concerts') }}" class="{% block nav_concerts %}{% endblock %}">Concerts</a></li>
+        {% if session.user_id %}
             <li><a href="{{ url_for('my_bookings') }}">My Bookings</a></li>
-            {% if session.user_id %}
-    <li><span class="nav-username">Hi, {{ session.user_name }}</span></li>
-    <li><a href="{{ url_for('logout') }}" class="btn-login">Logout</a></li>
-{% else %}
-    <li><a href="{{ url_for('login') }}" class="btn-login {% block nav_login %}{% endblock %}">Login</a></li>
-{% endif %}
-        </ul>
-    </nav>
+            {% if session.user_role == 'admin' %}
+            <li><a href="{{ url_for('admin_dashboard') }}">Admin</a></li>
+            {% endif %}
+            <li><span class="nav-username">Hi, {{ session.user_name }}</span></li>
+            <li><a href="{{ url_for('logout') }}" class="btn-login">Logout</a></li>
+        {% else %}
+            <li><a href="{{ url_for('login') }}" class="btn-login {% block nav_login %}{% endblock %}">Login</a></li>
+        {% endif %}
+    </ul>
+</nav>
 
     <!-- THIS is the "hole" — every page's unique content gets inserted right here. -->
      {% with messages = get_flashed_messages(with_categories=true) %}

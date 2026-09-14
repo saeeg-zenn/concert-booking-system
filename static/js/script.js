@@ -109,10 +109,20 @@ bookBtn.addEventListener('click', function () {
             window.location.reload(); // refresh to show updated seat availability
         }
     })
-    .catch(function (error) {
+        .catch(function (error) {
         alert('Something went wrong. Please try again.');
         console.error(error);
     });
 });
 
 } // end of "if (seats.length > 0)"
+
+// Mobile navbar toggle
+const navToggle = document.getElementById('nav-toggle');
+const navLinks = document.getElementById('nav-links');
+
+if (navToggle) {
+    navToggle.addEventListener('click', function () {
+        navLinks.classList.toggle('open');
+    });
+}

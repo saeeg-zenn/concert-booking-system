@@ -601,3 +601,41 @@ body {
     border: 1px solid #1dffbb;
     color: #6dffcf;
 }
+
+/* -------- Mobile-responsive navbar -------- */
+.nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: #f0f0f0;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+@media (max-width: 768px) {
+    .nav-toggle {
+        display: block;
+    }
+
+    .nav-links {
+        display: none;
+        flex-direction: column;
+        width: 100%;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #16161f;
+        padding: 20px;
+        gap: 16px;
+        border-bottom: 1px solid #2a2a35;
+    }
+
+    .nav-links.open {
+        display: flex;
+    }
+
+    .navbar {
+        position: relative;
+        flex-wrap: wrap;
+    }
+}
